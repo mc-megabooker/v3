@@ -28,7 +28,7 @@ It's a really well-configured approach for building applications with full-stack
 ## prerequisite
 
 -First make sure that you have a MongoDB database installed somewhere and change the configurations in `src/server/configs.ts` file. the default is localhost.
-Since the app is based on webpack 4, we need use Node version 16.13.1.
+NOTE: Since the app is based on webpack 4, we need use Node version 16.13.1.
 
 ### Development mode
 
