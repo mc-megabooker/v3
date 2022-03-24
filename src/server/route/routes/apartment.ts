@@ -5,6 +5,8 @@ import { Apartment } from '../../models';
 import { IError } from '../../domain/IError';
 import { v4 as uuidv4 } from 'uuid';
 import postApartment from '../../services/holidu.service';
+import { rejects } from 'assert';
+import { resolve } from 'path';
 
 router.route('/apartment')
   .post(async (req: Request, res: Response) => {
@@ -44,7 +46,7 @@ router.route('/apartment')
     });
     try {
       const savedApartment: IApartment = await myApartment.save();
-      postApartment(myApartment);
+      // postApartment(myApartment);
       res.status(201).json(savedApartment);
     } catch (e) {
       const error: IError = {
@@ -54,6 +56,25 @@ router.route('/apartment')
       console.error(e);
       res.status(error.status).json({message: "Something is wrong"})
     }
-  });
+  })
+  .get((req: Request, res: Response) => {
+    const { providerApartmentId } : { providerApartmentId: string } = req.body;
+    try {
+      Apartment.find({ providerApartmentId }).exec((err, response) => {
+        if (!err) {
+        res.status(200).json(response[0])
+        } else {
+          console.error(err);
+        }
+      })
+    } catch (e) {
+      const error: IError = {
+        status: 500,
+        message: "Something is wrong"
+      }
+      console.error(e);
+      res.status(error.status).json({message: "Something is wrong"})
+    }
+  })
 
   export default router;
