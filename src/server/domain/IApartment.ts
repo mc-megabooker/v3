@@ -15,7 +15,7 @@ export interface IPhoto{
 }
 
 export interface IApartment extends Document{
-  provdierApartmentId: string;
+  providerApartmentId: string;
   lat: number;
   lng: number;
   maxPersons: number;
