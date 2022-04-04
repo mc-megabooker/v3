@@ -7,6 +7,12 @@ function path(url: string): IPathRoute {
         },
         "/extra": {
             methods: ["POST", "GET", "PUT"]
+        },
+        "/apartment": {
+            methods: ["POST", "GET"]
+        },
+        "/apartments": {
+            methods: ["POST", "GET"]
         }
     }
     return allRoutes[url];

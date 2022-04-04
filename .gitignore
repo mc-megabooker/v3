@@ -2,6 +2,7 @@
 node_modules
 .idea
 server/**
+yarn.lock
 # Logs
 logs
 *.log
