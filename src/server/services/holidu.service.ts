@@ -6,7 +6,7 @@ const config = {
   BASE_URL: "https://provider-api.holidu.com/rest/public/integration/apartments"
 }
 
-export default async function postApartment(myApartment: IApartment): Promise<void> {
+export default async function postApartment(myApartment: IApartment): Promise<IApartment> {
   return await axios.post<IApartment>(config.BASE_URL, {
     providerApartmentId: myApartment.providerApartmentId,
     lat: myApartment.lat,
@@ -24,6 +24,7 @@ export default async function postApartment(myApartment: IApartment): Promise<vo
     }
   }).then((response: AxiosResponse) => {
     console.log("Apartment posted: ", response.data);
+    return response.data;
   }).catch((error) => {
     error.log(error);
   });

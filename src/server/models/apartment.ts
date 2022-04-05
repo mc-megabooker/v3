@@ -5,6 +5,7 @@ import {Schema} from "mongoose";
 const {mongo: {model}} = Database;
 
 const ApartmentSchema: Schema<IApartment> = new Schema<IApartment>({
+  holiduApartmentId: { type: String, unique: true },
   providerApartmentId: { type: String, required: true, unique: true },
   lat: { type: Number, required: true },
   lng: { type: Number, required: true },
@@ -17,4 +18,4 @@ const ApartmentSchema: Schema<IApartment> = new Schema<IApartment>({
   photos: { type: [], required: true }
 });
 
-export default model<IApartment>('Apartment',ApartmentSchema);
+export default model<IApartment>('Apartment', ApartmentSchema);

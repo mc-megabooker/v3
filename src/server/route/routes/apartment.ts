@@ -44,16 +44,26 @@ router.route('/apartment')
       photos
     });
     try {
-      const savedApartment: IApartment = await myApartment.save();
-      postApartment(myApartment);
-      res.status(201).json(savedApartment);
+      const savedApartment = await myApartment.save();
+      const holiduApartment = postApartment(myApartment);
+      await myApartment.collection.updateOne({ providerApartmentId: savedApartment.providerApartmentId }, {
+        $set: {
+          holiduApartmentId: (await holiduApartment).holiduApartmentId
+        }
+      })
+      .then(() => {
+        myApartment.collection.findOne({ providerApartmentId: savedApartment.providerApartmentId })
+        .then((doc) => {
+          res.status(200).json(doc);
+        })
+      });
     } catch (e) {
       const error: IError = {
         status: 500,
         message: "Something is wrong"
       }
       console.error(e);
-      res.status(error.status).json({message: "Something is wrong"})
+      res.status(error.status).json({message: e})
     }
   })
   // get apartment from DB by providerApartmentId
