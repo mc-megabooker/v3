@@ -45,10 +45,10 @@ router.route('/apartment')
     });
     try {
       const savedApartment = await myApartment.save();
-      const holiduApartment = postApartment(myApartment);
-      await myApartment.collection.updateOne({ providerApartmentId: savedApartment.providerApartmentId }, {
+      const holiduApartment = await postApartment(myApartment);
+      myApartment.collection.updateOne({ providerApartmentId: savedApartment.providerApartmentId }, {
         $set: {
-          holiduApartmentId: (await holiduApartment).holiduApartmentId
+          holiduApartmentId: holiduApartment?.holiduApartmentId
         }
       })
       .then(() => {

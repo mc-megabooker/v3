@@ -5,13 +5,13 @@ import { IError } from '../../domain/IError';
 
 router.route('/apartments')
 // get all apartments
-  .get(async (req: Request, res: Response) => {
+  .get(async (_: Request, res: Response) => {
     try {
       Apartment.find({}, (error, response) => {
         if (!error) {
           res.status(200).json(response);
         } else {
-          console.error(error);
+          throw error
         }
       });
     } catch (e) {

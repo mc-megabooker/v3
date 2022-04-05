@@ -24,12 +24,11 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
-        use: [
-          {
-            loader: 'awesome-typescript-loader'
-          },
-        ],
-        exclude: /node_modules/
+        loader: 'ts-loader',
+        exclude: /node_modules/,
+        options: {
+          transpileOnly: true
+        }
       },
       {
         enforce: 'pre',
@@ -76,7 +75,8 @@ module.exports = {
         secure: false,
         changeOrigin: true
       }
-    }
+    },
+    historyApiFallback: true,
   },
   plugins: [
     new CleanWebpackPlugin([outputDirectory]),
