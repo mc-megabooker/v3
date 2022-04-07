@@ -1,14 +1,16 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import {
     makeStyles,
     Container,
     Typography,
     TextField,
     Button,
+    Checkbox
   } from "@material-ui/core";
   import {  Col } from "react-bootstrap";
-  import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
-  import { IPrice, IFacility, IPhoto } from '../../server/domain/IApartment';
+  import { IPrice, IFacility, IPhoto, IApartment } from '../../server/domain/IApartment';
+  import { Put, Post, Get, Delete } from "../Services";
+import { apiRoute } from '../utils';
 
 interface ICreateApartmentForm { 
     lat: number;
@@ -97,6 +99,38 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
           setter(e.target.value);
       };
 
+      const handleActiveChange = (e) => {
+          setActive(e.target.checked)
+      };
+
+      const handleSubmit = async (): Promise<void> => {
+        const obj = {
+            "lat": parseFloat(lat),
+            "lng": parseFloat(lng),
+            "maxPersons": parseInt(maxPersons),
+            "generalMinimumStay": parseInt(generalMinimumStay),
+            "generalMinimumPrice": {
+                "amount": parseInt(generalMinimumPriceAmount),
+                "currency": generalMinimumPriceCurrency,
+            },
+            "active": active,
+            "apartmentType": apartmentType,
+            "photos": allPhotos,
+            "facilities": allFacilities,
+        }
+        try {
+            const res: IApartment = await Post(
+                apiRoute.getRoute('apartment'),
+                obj,
+            );
+        } catch (e) {
+            console.log(e.message);
+            
+        }
+
+        console.log(obj);
+      }
+
     return (
         <Container maxWidth="sm">
             <Typography className={heading} variant="h3">
@@ -171,10 +205,7 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
             <Typography variant='body1'>
                 Active
             </Typography>
-            <input
-                type="checkbox"
-                onChange={(e) => handleInputChange(e, setActive)}
-            />
+            <Checkbox checked={active} onChange={handleActiveChange} />
             <TextField
                 variant="outlined"
                 margin="normal"
@@ -256,11 +287,11 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
                           <TextField
                             variant="outlined"
                             margin="normal"
-                            label="Enter URL"
+                            label="Enter facility name"
                             type="text"
                             fullWidth
                             required
-                            name="url"
+                            name="name"
                             value={field.name}
                             onChange={(event) =>
                               handleFacilitiesInputChange(index, event)
@@ -288,6 +319,17 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
                     color="primary"
                   >
                     Add new facility
+                  </Button>
+                  <br />
+                  <br />
+                  <Button
+                    onClick={() => handleSubmit()}
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                  >
+                    Create apartment
                   </Button>
         </Container>
     )
