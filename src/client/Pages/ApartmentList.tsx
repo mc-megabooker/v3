@@ -61,7 +61,7 @@ const ApartmentList: FunctionComponent<any> = (props) => {
                 <TableCell align="right">{apartment.generalMinimumStay}</TableCell>
                 <TableCell align="right">{apartment.generalMinimumPrice.amount}</TableCell>
                 <TableCell align="right">{apartment.generalMinimumPrice.currency}</TableCell>
-                <TableCell align="right">{apartment.active}</TableCell>
+                <TableCell align="right">{new Boolean(apartment.active).toString()}</TableCell>
                 <TableCell align="right">{apartment.apartmentType}</TableCell>
                 <TableCell align="right">{apartment.holiduApartmentId}</TableCell>
               </TableRow>
