@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link, Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
 import '../Less/app.less';
 import { apiRoute } from '../utils';
 import { AppProps, AppStates } from "../../server/domain/IApp";

@@ -7,10 +7,10 @@ import {
     Button,
     Checkbox
   } from "@material-ui/core";
-  import {  Col } from "react-bootstrap";
+  import { Col } from "react-bootstrap";
   import { IPrice, IFacility, IPhoto, IApartment } from '../../server/domain/IApartment';
-  import { Put, Post, Get, Delete } from "../Services";
-import { apiRoute } from '../utils';
+  import { Post } from "../Services";
+  import { apiRoute } from '../utils';
 
 interface ICreateApartmentForm { 
     lat: number;
