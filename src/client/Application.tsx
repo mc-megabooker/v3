@@ -6,6 +6,7 @@ import ImportPage from './Pages/Import';
 import Apartments from './Pages/Apartments';
 import CreateApartment from './Pages/CreateApartment';
 import ApartmentList from './Pages/ApartmentList';
+import ApartmentDetails from './Pages/ApartmentDetails';
 
 export interface IApplicationProps { }
 
@@ -18,7 +19,9 @@ const Application: React.FunctionComponent<IApplicationProps> = (props) => {
                     <Route path="import" element={<ImportPage />} />
                     <Route path="apartments" element={<Apartments />}></Route>
                     <Route path="create-apartment" element={<CreateApartment />}></Route>
-                    <Route path="apartment-list" element={<ApartmentList />}></Route>
+                    <Route path="apartment-list" element={<ApartmentList />}>
+                        <Route path=":id" element={<ApartmentDetails />} />
+                    </Route>
                 </Routes>
             </BrowserRouter>
         </div>

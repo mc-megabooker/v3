@@ -123,6 +123,9 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
                 apiRoute.getRoute('apartment'),
                 obj,
             );
+            if (res.ok) {
+              window.location.href = "/apartment-list"
+            }
         } catch (e) {
             console.log(e.message);
             

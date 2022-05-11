@@ -11,7 +11,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
-
 const ApartmentList: FunctionComponent<any> = (props) => {
   const [apartments, setApartments] = useState([]);
 
@@ -20,7 +19,8 @@ const ApartmentList: FunctionComponent<any> = (props) => {
         const res = await Get(
             apiRoute.getRoute('apartments')
         );
-        setApartments(res); 
+        setApartments(res.apartments);
+        
     } catch (e) {
         console.log(e.message); 
     }
@@ -29,13 +29,14 @@ const ApartmentList: FunctionComponent<any> = (props) => {
   useEffect(() => {
     getApartments();
   }, []);
+
+  console.log(apartments);
   return (
     <div>
       <TableContainer component={Paper}>
         <Table aria-label="simple table">
           <TableHead style={{ backgroundColor: 'lightgray' }}>
-            <TableRow>  
-              <TableCell>Database ID</TableCell>
+            <TableRow>
               <TableCell align="right">providerApartmentId</TableCell>
               <TableCell align="right">latitude</TableCell>
               <TableCell align="right">langitude</TableCell>
@@ -49,21 +50,18 @@ const ApartmentList: FunctionComponent<any> = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {apartments.map((apartment) => (
-              <TableRow key={apartment.providerApartmentId}>
-                <TableCell component="th" scope="row">
-                  {apartment._id}
-                </TableCell>
-                <TableCell align="right">{apartment.providerApartmentId}</TableCell>
-                <TableCell align="right">{apartment.lat}</TableCell>
-                <TableCell align="right">{apartment.lng}</TableCell>
-                <TableCell align="right">{apartment.maxPersons}</TableCell>
-                <TableCell align="right">{apartment.generalMinimumStay}</TableCell>
-                <TableCell align="right">{apartment.generalMinimumPrice.amount}</TableCell>
-                <TableCell align="right">{apartment.generalMinimumPrice.currency}</TableCell>
-                <TableCell align="right">{new Boolean(apartment.active).toString()}</TableCell>
-                <TableCell align="right">{apartment.apartmentType}</TableCell>
-                <TableCell align="right">{apartment.holiduApartmentId}</TableCell>
+            {apartments.map(({ data = {} }) => (
+              <TableRow key={data?.providerApartmentId}>
+                <TableCell align="right">{data?.providerApartmentId}</TableCell>
+                <TableCell align="right">{data?.lat}</TableCell>
+                <TableCell align="right">{data?.lng}</TableCell>
+                <TableCell align="right">{data?.maxPersons}</TableCell>
+                <TableCell align="right">{data?.generalMinimumStay}</TableCell>
+                <TableCell align="right">{data?.generalMinimumPrice?.amount}</TableCell>
+                <TableCell align="right">{data?.generalMinimumPrice?.currency}</TableCell>
+                <TableCell align="right">{new Boolean(data?.active)?.toString()}</TableCell>
+                <TableCell align="right">{data?.apartmentType}</TableCell>
+                <TableCell align="right">{data?.holiduApartmentId}</TableCell>
               </TableRow>
             ))}
           </TableBody>
