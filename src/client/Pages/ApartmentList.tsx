@@ -19,7 +19,7 @@ const ApartmentList: FunctionComponent<any> = (props) => {
         const res = await Get(
             apiRoute.getRoute('apartments')
         );
-        setApartments(res.apartments);
+        setApartments(res);
         
     } catch (e) {
         console.log(e.message); 
@@ -52,16 +52,16 @@ const ApartmentList: FunctionComponent<any> = (props) => {
           <TableBody>
             {apartments.map(({ data = {} }) => (
               <TableRow key={data?.providerApartmentId}>
-                <TableCell align="right">{data?.providerApartmentId}</TableCell>
-                <TableCell align="right">{data?.lat}</TableCell>
-                <TableCell align="right">{data?.lng}</TableCell>
-                <TableCell align="right">{data?.maxPersons}</TableCell>
-                <TableCell align="right">{data?.generalMinimumStay}</TableCell>
-                <TableCell align="right">{data?.generalMinimumPrice?.amount}</TableCell>
-                <TableCell align="right">{data?.generalMinimumPrice?.currency}</TableCell>
-                <TableCell align="right">{new Boolean(data?.active)?.toString()}</TableCell>
-                <TableCell align="right">{data?.apartmentType}</TableCell>
-                <TableCell align="right">{data?.holiduApartmentId}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.providerApartmentId}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.lat}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.lng}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.maxPersons}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.generalMinimumStay}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.generalMinimumPrice?.amount}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.generalMinimumPrice?.currency}</TableCell>
+                <TableCell align="right">{new Boolean(JSON.parse(data)?.active)?.toString()}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.apartmentType}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.holiduApartmentId}</TableCell>
               </TableRow>
             ))}
           </TableBody>
