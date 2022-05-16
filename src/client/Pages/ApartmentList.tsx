@@ -30,7 +30,6 @@ const ApartmentList: FunctionComponent<any> = (props) => {
     getApartments();
   }, []);
 
-  console.log(apartments);
   return (
     <div>
       <TableContainer component={Paper}>
@@ -51,7 +50,7 @@ const ApartmentList: FunctionComponent<any> = (props) => {
           </TableHead>
           <TableBody>
             {apartments.map(({ data = {} }) => (
-              <TableRow key={data?.providerApartmentId}>
+              <TableRow key={JSON.parse(data)?.providerApartmentId}>
                 <TableCell align="right">{JSON.parse(data)?.providerApartmentId}</TableCell>
                 <TableCell align="right">{JSON.parse(data)?.lat}</TableCell>
                 <TableCell align="right">{JSON.parse(data)?.lng}</TableCell>
