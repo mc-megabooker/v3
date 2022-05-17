@@ -37,13 +37,29 @@ const ApartmentList: FunctionComponent<any> = (props) => {
           <TableHead style={{ backgroundColor: 'lightgray' }}>
             <TableRow>
               <TableCell align="right">providerApartmentId</TableCell>
+              <TableCell align="right">name</TableCell>
+              <TableCell align="right">sizeInSqm</TableCell>
+              <TableCell align="right">sizeOfPlot</TableCell>
+              <TableCell align="right">storey</TableCell>
+              <TableCell align="right">license</TableCell>
+              <TableCell align="right">street</TableCell>
+              <TableCell align="right">city</TableCell>
+              <TableCell align="right">postCode</TableCell>
+              <TableCell align="right">country</TableCell>
+              <TableCell align="right">contactName</TableCell>
+              <TableCell align="right">contactPhone</TableCell>
+              <TableCell align="right">contactEmail</TableCell>
+              <TableCell align="right">contactDaysBeforeArrival</TableCell>
+              <TableCell align="right">checkInFrom</TableCell>
+              <TableCell align="right">checkInTo</TableCell>
+              <TableCell align="right">checkOutUntil</TableCell>
               <TableCell align="right">latitude</TableCell>
               <TableCell align="right">langitude</TableCell>
-              <TableCell>maxPersons</TableCell>
+              <TableCell align="right">maxPersons</TableCell>
               <TableCell align="right">generalMinimumStay</TableCell>
               <TableCell align="right">generalMinimumPrice.amount</TableCell>
               <TableCell align="right">generalMinimumPrice.currency</TableCell>
-              <TableCell>active</TableCell>
+              <TableCell align="right">active</TableCell>
               <TableCell align="right">apartmentType</TableCell>
               <TableCell align="right">holiduApartmentId</TableCell>
             </TableRow>
@@ -52,6 +68,22 @@ const ApartmentList: FunctionComponent<any> = (props) => {
             {apartments.map(({ data = {} }) => (
               <TableRow key={JSON.parse(data)?.providerApartmentId}>
                 <TableCell align="right">{JSON.parse(data)?.providerApartmentId}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.name}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.sizeInSqm}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.sizeOfPlot}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.storey}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.license}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.street}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.city}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.postCode}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.country}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.contactName}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.contactPhone}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.contactEmail}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.contactDaysBeforeArrival}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.checkInFrom}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.checkInTo}</TableCell>
+                <TableCell align="right">{JSON.parse(data)?.checkOutUntil}</TableCell>
                 <TableCell align="right">{JSON.parse(data)?.lat}</TableCell>
                 <TableCell align="right">{JSON.parse(data)?.lng}</TableCell>
                 <TableCell align="right">{JSON.parse(data)?.maxPersons}</TableCell>

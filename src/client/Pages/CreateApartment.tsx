@@ -1,22 +1,25 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import {
-    makeStyles,
-    Container,
-    Typography,
-    TextField,
-    Button,
-    Checkbox
-  } from "@material-ui/core";
-  import { Col } from "react-bootstrap";
-  import { IPrice, IFacility, IPhoto, IApartment } from '../../server/domain/IApartment';
-  import { Post } from "../Services";
-  import { apiRoute } from '../utils';
-  import Box from '@mui/material/Box';
+  makeStyles,
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Checkbox  } from "@material-ui/core";
+import { Get } from "../Services";
+import { Col } from "react-bootstrap";
+import { IPrice, IFacility, IPhoto, IApartment } from '../../server/domain/IApartment';
+import { Post } from "../Services";
+import { apiRoute } from '../utils';
+import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select'
 import { useNavigate } from 'react-router-dom';
+import { constants } from '../../constants';
+import Switch from '@mui/material/Switch';
+
 
 interface ICreateApartmentForm { 
     lat: number;
@@ -42,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
     const { heading, submitButton } = useStyles();
+    const [facilityTypes, setFacilityTypes] = useState([]);
     const navigate = useNavigate();
     const [lat, setLat] = useState(null);
     const [lng, setLng] = useState(null);
@@ -51,18 +55,58 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
     const [generalMinimumPriceCurrency, setGeneralMinimumPriceCurrency] = useState('');
     const [active, setActive] = useState(false);
     const [apartmentType, setApartmentType] = useState('');
+    const [name, setName] = useState('');
+    const [sizeInSqm, setSizeInSqm] = useState(null);
+    const [sizeOfPlot, setSizeOfPlot] = useState(null);
+    const [storey, setStorey] = useState(null);
+    const [license, setLicense] = useState('');
+    const [street, setStreet] = useState('');
+    const [city, setCity] = useState('');
+    const [postCode, setPostCode] = useState('');
+    const [country, setCountry] = useState('');
+    const [contactName, setContactName] = useState('');
+    const [contactPhone, setContactPhone] = useState('');
+    const [contactEmail, setContactEmail] = useState('');
+    const [contactDaysBeforeArrival, setContactDaysBeforeArrival] = useState(null);
+    const [checkInFrom, setCheckInFrom] = useState('');
+    const [checkInTo, setCheckInTo] = useState('');
+    const [checkOutUntil, setCheckOutUntil] = useState('');
     const [allPhotos, setAllPhotos] = useState([
-        { url: "", position: null },
+        { url: "", position: null, type: "" },
     ]);
     const [allFacilities, setAllFacilities] = useState([
-        { name: "" },
+        { name: "",
+          facilityCharacteristic: "",
+          language: "",
+          maxAmount: null,
+          privateUsage: false,
+          mandatory: false,
+          inclusive: false,
+          reference: "",
+          currency: "",
+          cost: null,
+          location: "",
+          onDemand: false,
+          roomId: "",
+          roomType: ""
+        },
     ]);
+
+    const getFacilityTypes = async (): Promise<void> => {
+      try {
+          const res = await Get("https://provider-api.holidu.com/rest/public/integration/facilities/characteristics")
+          setFacilityTypes(res);
+      } catch (e) {
+         console.log(e.message)
+      }
+    };
 
     const handleAddPhotos = () => {
         const values = [...allPhotos];
         values.push({
           url: "",
           position: null,
+          type: "",
         });
         setAllPhotos(values);
       };
@@ -73,17 +117,31 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
         setAllPhotos(values);
       };
     
-      const handlePhotosInputChange = (index, event) => {
+      const handlePhotosInputChange = (index: number, event: any) => {
         const values = [...allPhotos];
         const updatedValue = event.target.name;
         values[index][updatedValue] = event.target.value;
         setAllPhotos(values);
+        
       };
 
       const handleAddFacilities = () => {
         const values = [...allFacilities];
         values.push({
           name: "",
+          facilityCharacteristic: "",
+          language: "",
+          maxAmount: null,
+          privateUsage: false,
+          mandatory: false,
+          inclusive: false,
+          reference: "",
+          currency: "",
+          cost: null,
+          location: "",
+          onDemand: false,
+          roomId: "",
+          roomType: "",
         });
         setAllFacilities(values);
       };
@@ -96,9 +154,16 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
     
       const handleFacilitiesInputChange = (index, event) => {
         const values = [...allFacilities];
-        const updatedValue = event.target.name;
-        values[index][updatedValue] = event.target.value;
-        setAllFacilities(values);
+        if (event.target.type === 'checkbox') {
+          const updatedValue = event.target.name;
+          values[index][updatedValue] = event.target.checked;
+          setAllFacilities(values);
+          
+        } else {
+          const updatedValue = event.target.name;
+          values[index][updatedValue] = event.target.value;
+          setAllFacilities(values);
+        }
       };
       
       const handleInputChange = (e, setter) => {
@@ -113,6 +178,22 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
         const obj = {
             "lat": parseFloat(lat),
             "lng": parseFloat(lng),
+            "name": name,
+            "sizeInSqm": parseFloat(sizeInSqm),
+            "sizeOfPlot": parseFloat(sizeOfPlot),
+            "storey": parseInt(storey),
+            "license": license,
+            "street": street,
+            "city": city,
+            "postCode": postCode,
+            "country": country,
+            "contactName": contactName,
+            "contactPhone": contactPhone,
+            "contactEmail": contactEmail,
+            "contactDaysBeforeArrival": parseInt(contactDaysBeforeArrival),
+            "checkInFrom": checkInFrom,
+            "checkInTo": checkInTo,
+            "checkOutUntil": checkOutUntil,
             "maxPersons": parseInt(maxPersons),
             "generalMinimumStay": parseInt(generalMinimumStay),
             "generalMinimumPrice": {
@@ -136,15 +217,186 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
             console.log(e.message);
             
         }
-
-        console.log(obj);
       }
+
+      useEffect(() => {
+        getFacilityTypes();
+      }, []);
 
     return (
         <Container maxWidth="sm">
             <Typography className={heading} variant="h3">
             Create apartment
             </Typography>
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter property name"
+                type="text"
+                fullWidth
+                
+                name="name"
+                value={name}
+                onChange={(e) => handleInputChange(e, setName)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter size in sqm"
+                type="number"
+                fullWidth
+                
+                name="sizeInSqm"
+                value={sizeInSqm}
+                onChange={(e) => handleInputChange(e, setSizeInSqm)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter total size of property including everything"
+                type="number"
+                fullWidth
+                
+                name="sizeOfPlot"
+                value={sizeOfPlot}
+                onChange={(e) => handleInputChange(e, setSizeOfPlot)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter storey"
+                type="number"
+                fullWidth
+                
+                name="storey"
+                value={storey}
+                onChange={(e) => handleInputChange(e, setStorey)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter license"
+                type="text"
+                fullWidth
+                
+                name="license"
+                value={license}
+                onChange={(e) => handleInputChange(e, setLicense)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter street"
+                type="text"
+                fullWidth
+                
+                name="street"
+                value={street}
+                onChange={(e) => handleInputChange(e, setStreet)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter city"
+                type="text"
+                fullWidth
+                
+                name="city"
+                value={city}
+                onChange={(e) => handleInputChange(e, setCity)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter postal code"
+                type="text"
+                fullWidth
+                
+                name="postCode"
+                value={postCode}
+                onChange={(e) => handleInputChange(e, setPostCode)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter country"
+                type="text"
+                fullWidth
+                
+                name="country"
+                value={country}
+                onChange={(e) => handleInputChange(e, setCountry)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter contact name"
+                type="text"
+                fullWidth
+                name="contactName"
+                value={contactName}
+                onChange={(e) => handleInputChange(e, setContactName)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter contact phone"
+                type="text"
+                fullWidth
+                name="contactPhone"
+                value={contactPhone}
+                onChange={(e) => handleInputChange(e, setContactPhone)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter contact email"
+                type="text"
+                fullWidth
+                name="contactEmail"
+                value={contactEmail}
+                onChange={(e) => handleInputChange(e, setContactEmail)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter how many days before arrival contact is needed"
+                type="number"
+                fullWidth
+                name="contactDaysBeforeArrival"
+                value={contactDaysBeforeArrival}
+                onChange={(e) => handleInputChange(e, setContactDaysBeforeArrival)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter when check in starts"
+                type="text"
+                fullWidth
+                name="checkInFrom"
+                value={checkInFrom}
+                onChange={(e) => handleInputChange(e, setCheckInFrom)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter when check in ends"
+                type="text"
+                fullWidth
+                name="checkInTo"
+                value={checkInTo}
+                onChange={(e) => handleInputChange(e, setCheckInTo)}
+            />
+            <TextField
+                variant="outlined"
+                margin="normal"
+                label="Enter deadline for check out"
+                type="text"
+                fullWidth
+                name="checkOutUntil"
+                value={checkOutUntil}
+                onChange={(e) => handleInputChange(e, setCheckOutUntil)}
+            />
             <TextField
                 variant="outlined"
                 margin="normal"
@@ -204,139 +456,37 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Currency</InputLabel>
                 <Select
+                  required
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={generalMinimumPriceCurrency}
                   label="Currency"
                   onChange={(e) => handleInputChange(e, setGeneralMinimumPriceCurrency)}
                 >
-                  <MenuItem value="AED">AED</MenuItem>
-                  <MenuItem value="ARS">ARS</MenuItem>
-                  <MenuItem value="AUD">AUD</MenuItem>
-                  <MenuItem value="AZN">AZN</MenuItem>
-                  <MenuItem value="BGN">BGN</MenuItem>
-                  <MenuItem value="BHD">BHD</MenuItem>
-                  <MenuItem value="BRL">BRL</MenuItem>
-                  <MenuItem value="CAD">CAD</MenuItem>
-                  <MenuItem value="CHF">CHF</MenuItem>
-                  <MenuItem value="CLP">CLD</MenuItem>
-                  <MenuItem value="CNY">CNY</MenuItem>
-                  <MenuItem value="COP">COP</MenuItem>
-                  <MenuItem value="CZK">CZK</MenuItem>
-                  <MenuItem value="DKK">DKK</MenuItem>
-                  <MenuItem value="EGP">EGP</MenuItem>
-                  <MenuItem value="EUR">EUR</MenuItem>
-                  <MenuItem value="GBP">GBP</MenuItem>
-                  <MenuItem value="GEL">GEL</MenuItem>
-                  <MenuItem value="HKD">HKD</MenuItem>
-                  <MenuItem value="HUF">HUF</MenuItem>
-                  <MenuItem value="IDR">IDR</MenuItem>
-                  <MenuItem value="ILS">ILS</MenuItem>
-                  <MenuItem value="INR">INR</MenuItem>
-                  <MenuItem value="JOD">JOD</MenuItem>
-                  <MenuItem value="JPY">JPY</MenuItem>
-                  <MenuItem value="KRW">KRW</MenuItem>
-                  <MenuItem value="KWD">KWD</MenuItem>
-                  <MenuItem value="KZT">KZT</MenuItem>
-                  <MenuItem value="MDL">MDL</MenuItem>
-                  <MenuItem value="MXN">MXN</MenuItem>
-                  <MenuItem value="MYR">MYR</MenuItem>
-                  <MenuItem value="NAD">NAD</MenuItem>
-                  <MenuItem value="NOK">NOK</MenuItem>
-                  <MenuItem value="NZD">NZD</MenuItem>
-                  <MenuItem value="OMR">OMR</MenuItem>
-                  <MenuItem value="PLN">PLN</MenuItem>
-                  <MenuItem value="QAR">QAR</MenuItem>
-                  <MenuItem value="RON">RON</MenuItem>
-                  <MenuItem value="RUB">RUB</MenuItem>
-                  <MenuItem value="SAR">SAR</MenuItem>
-                  <MenuItem value="SEK">SEK</MenuItem>
-                  <MenuItem value="SGD">SGD</MenuItem>
-                  <MenuItem value="THB">THB</MenuItem>
-                  <MenuItem value="TRY">TRY</MenuItem>
-                  <MenuItem value="TWD">TWD</MenuItem>
-                  <MenuItem value="UAH">UAH</MenuItem>
-                  <MenuItem value="USD">USD</MenuItem>
-                  <MenuItem value="XOF">XOF</MenuItem>
-                  <MenuItem value="ZAR">ZAR</MenuItem>
-                  
+                  {constants.CURRENCIES.map((currency) => {
+                    return <MenuItem value={currency}>{currency}</MenuItem>
+                  })}
                 </Select>
               </FormControl>
             </Box>
             <Typography variant='body1'>
                 Active
             </Typography>
-            <Checkbox checked={active} onChange={handleActiveChange} />
+            <Checkbox required checked={active} onChange={handleActiveChange} />
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Apartment type</InputLabel>
                 <Select
+                  required
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={apartmentType}
                   label="Apartment type"
                   onChange={(e) => handleInputChange(e, setApartmentType)}
                 >
-                  <MenuItem value="APARTMENT">APARTMENT</MenuItem>
-                  <MenuItem value="VACATION_APARTMENT">VACATION_APARTMENT</MenuItem>
-                  <MenuItem value="FISHING_HOUSE">FISHING_HOUSE</MenuItem>
-                  <MenuItem value="BED_AND_BREAKFAST">BED_AND_BREAKFAST</MenuItem>
-                  <MenuItem value="HOLIDAY_VILLAGE1">HOLIDAY_VILLAGE1</MenuItem>
-                  <MenuItem value="HOLIDAY_VILLAGE2">HOLIDAY_VILLAGE2</MenuItem>
-                  <MenuItem value="APARTMENT_HOTEL">APARTMENT_HOTEL</MenuItem>
-                  <MenuItem value="FARMHOUSE">FARMHOUSE</MenuItem>
-                  <MenuItem value="COTTAGE">COTTAGE</MenuItem>
-                  <MenuItem value="CAMPING">CAMPING</MenuItem>
-                  <MenuItem value="CHALET">CHALET</MenuItem>
-                  <MenuItem value="VACATION_HOME">VACATION_HOME</MenuItem>
-                  <MenuItem value="GUEST_ROOM">GUEST_ROOM</MenuItem>
-                  <MenuItem value="HOSTEL">HOSTEL</MenuItem>
-                  <MenuItem value="HOTEL">HOTEL</MenuItem>
-                  <MenuItem value="BOAT">BOAT</MenuItem>
-                  <MenuItem value="MANOR">MANOR</MenuItem>
-                  <MenuItem value="MOBILE_HOME">MOBILE_HOME</MenuItem>
-                  <MenuItem value="LODGE">LODGE</MenuItem>
-                  <MenuItem value="HOUSE_BOAT">HOUSE_BOAT</MenuItem>
-                  <MenuItem value="PENTHOUSE">PENTHOUSE</MenuItem>
-                  <MenuItem value="CASTLE">CASTLE</MenuItem>
-                  <MenuItem value="STUDIO">STUDIO</MenuItem>
-                  <MenuItem value="VILLA">VILLA</MenuItem>
-                  <MenuItem value="RESIDENCE">RESIDENCE</MenuItem>
-                  <MenuItem value="ROOM">ROOM</MenuItem>
-                  <MenuItem value="BARN">BARN</MenuItem>
-                  <MenuItem value="CAVE">CAVE</MenuItem>
-                  <MenuItem value="ALLOTMENT_GARDEN">ALLOTMENT_GARDEN</MenuItem>
-                  <MenuItem value="ROOM_BREAKFAST">ROOM_BREAKFAST</MenuItem>
-                  <MenuItem value="BUNGALOW">BUNGALOW</MenuItem>
-                  <MenuItem value="YACHT">YACHT</MenuItem>
-                  <MenuItem value="CAMPER">CAMPER</MenuItem>
-                  <MenuItem value="CARAVAN">CARAVAN</MenuItem>
-                  <MenuItem value="LUXURY_TENT">LUXURY_TENT</MenuItem>
-                  <MenuItem value="TENT">TENT</MenuItem>
-                  <MenuItem value="TIPI">TIPI</MenuItem>
-                  <MenuItem value="YURT">YURT</MenuItem>
-                  <MenuItem value="HOLIDAY_VILLAGE3">HOLIDAY_VILLAGE3</MenuItem>
-                  <MenuItem value="GUEST_HOUSE">GUEST_HOUSE</MenuItem>
-                  <MenuItem value="PENSION">PENSION</MenuItem>
-                  <MenuItem value="BEACH_HUT">BEACH_HUT</MenuItem>
-                  <MenuItem value="CHACARA">CHACARA</MenuItem>
-                  <MenuItem value="COUNTRY_HOUSE">COUNTRY_HOUSE</MenuItem>
-                  <MenuItem value="FARM">FARM</MenuItem>
-                  <MenuItem value="FINCA">FINCA</MenuItem>
-                  <MenuItem value="GITE">GITE</MenuItem>
-                  <MenuItem value="HUT">HUT</MenuItem>
-                  <MenuItem value="LIGHTHOUSE">LIGHTHOUSE</MenuItem>
-                  <MenuItem value="LOG_CABIN">LOG_CABIN</MenuItem>
-                  <MenuItem value="MILL">MILL</MenuItem>
-                  <MenuItem value="MOUNTAIN_HUT">MOUNTAIN_HUT</MenuItem>
-                  <MenuItem value="RIAD">RIAD</MenuItem>
-                  <MenuItem value="TOWER">TOWER</MenuItem>
-                  <MenuItem value="TREE_HOUSE">TREE_HOUSE</MenuItem>
-                  <MenuItem value="TRULLO">TRULLO</MenuItem>
-                  <MenuItem value="RESORT">RESORT</MenuItem>
-                  <MenuItem value="GLAMPING">GLAMPING</MenuItem>
-                  <MenuItem value="HOMESTAY">HOMESTAY</MenuItem>
-                  
+                  {constants.APARTMENT_TYPES.map((type) => {
+                    return <MenuItem value={type}>{type}</MenuItem>
+                  })}
                 </Select>
               </FormControl>
             </Box>
@@ -346,7 +496,7 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
             {allPhotos.length > 0 && (
                 <>
                   {allPhotos.map((field, index) => (
-                    <Col xs="4">
+                    <Col xs="1">
                       <div className="add-player-div">
                         <Typography variant="h6">Photo {index + 1}</Typography>
                           <TextField
@@ -355,7 +505,6 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
                             label="Enter URL"
                             type="text"
                             fullWidth
-                            required
                             name="url"
                             value={field.url}
                             onChange={(event) =>
@@ -368,13 +517,29 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
                             label="Enter position"
                             type="number"
                             fullWidth
-                            required
                             name="position"
                             value={field.position}
                             onChange={(event) =>
                               handlePhotosInputChange(index, event)
                             }
                           />
+                          <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Photo type</InputLabel>
+                            <Select
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              value={field.type}
+                              label="Photo type"
+                              name="type"
+                              onChange={(event) =>
+                                handlePhotosInputChange(index, event)
+                              }
+                            >
+                              {constants.PHOTO_TYPES.map((type) => {
+                                return <MenuItem value={type}>{type}</MenuItem>
+                              })}
+                            </Select>
+                          </FormControl>
                         <Button
                           onClick={() => handleRemovePhoto(index)}
                           type="submit"
@@ -413,9 +578,196 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
                             label="Enter facility name"
                             type="text"
                             fullWidth
-                            required
+                            
                             name="name"
                             value={field.name}
+                            onChange={(event) =>
+                              handleFacilitiesInputChange(index, event)
+                            }
+                          />
+                          <Box sx={{ minWidth: 120 }}>
+                            <FormControl fullWidth>
+                              <InputLabel id="demo-simple-select-label">Facility characteristic</InputLabel>
+                              <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                type="text"
+                                name="facilityCharacteristic"
+                                value={field.facilityCharacteristic}
+                                label="Facility Characteristic"
+                                onChange={(event) =>
+                                  handleFacilitiesInputChange(index, event)
+                                }
+                              >
+                                {facilityTypes.map((type) => {
+                                  return <MenuItem value={type}>{type}</MenuItem>
+                                })}
+                              </Select>
+                            </FormControl>
+                          </Box>
+                          <Box sx={{ minWidth: 120 }}>
+                            <FormControl fullWidth>
+                              <InputLabel id="demo-simple-select-label">Language</InputLabel>
+                              <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                type="text"
+                                name="language"
+                                value={field.language}
+                                label="Facility language"
+                                onChange={(event) =>
+                                  handleFacilitiesInputChange(index, event)
+                                }
+                              >
+                                {constants.FACILITY_LANGUAGES.map((lang) => {
+                                  return <MenuItem value={lang}>{lang}</MenuItem>
+                                })}
+                              </Select>
+                            </FormControl>
+                          </Box>
+                          <TextField
+                            variant="outlined"
+                            margin="normal"
+                            label="Enter maximum amount"
+                            type="number"
+                            fullWidth
+                            
+                            name="maxAmount"
+                            value={field.maxAmount}
+                            onChange={(event) =>
+                              handleFacilitiesInputChange(index, event)
+                            }
+                          />
+                          <Typography variant='body1'>
+                            Private usage
+                          </Typography>
+                          <Switch
+                            checked={field.privateUsage}
+                            name="privateUsage"
+                            onChange={(event) =>
+                              handleFacilitiesInputChange(index, event)
+                            }
+                          />
+                          <Typography variant='body1'>
+                            Mandatory
+                          </Typography>
+                          <Switch
+                            checked={field.mandatory}
+                            name="mandatory"
+                            onChange={(event) =>
+                              handleFacilitiesInputChange(index, event)
+                            }
+                          />
+                          <Typography variant='body1'>
+                            Inclusive
+                          </Typography>
+                          <Switch
+                            checked={field.inclusive}
+                            name="inclusive"
+                            onChange={(event) =>
+                              handleFacilitiesInputChange(index, event)
+                            }
+                          />
+                          <Box sx={{ minWidth: 120 }}>
+                            <FormControl fullWidth>
+                              <InputLabel id="demo-simple-select-label">Reference</InputLabel>
+                              <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                type="text"
+                                name="reference"
+                                value={field.reference}
+                                label="Reference"
+                                onChange={(event) =>
+                                  handleFacilitiesInputChange(index, event)
+                                }
+                              >
+                                {constants.FACILITY_REFERENCES.map((ref) => {
+                                  return <MenuItem value={ref}>{ref}</MenuItem>
+                                })}
+                              </Select>
+                            </FormControl>
+                          </Box>
+                          <Box sx={{ minWidth: 120 }}>
+                            <FormControl fullWidth>
+                              <InputLabel id="demo-simple-select-label">Currency</InputLabel>
+                              <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                type="text"
+                                name="currency"
+                                value={field.currency}
+                                label="Currency"
+                                onChange={(event) =>
+                                  handleFacilitiesInputChange(index, event)
+                                }
+                              >
+                                {constants.CURRENCIES.map((currency) => {
+                                  return <MenuItem value={currency}>{currency}</MenuItem>
+                                })}
+                              </Select>
+                            </FormControl>
+                          </Box>
+                          <TextField
+                            variant="outlined"
+                            margin="normal"
+                            label="Cost"
+                            type="number"
+                            fullWidth
+                            name="cost"
+                            value={field.cost}
+                            onChange={(event) =>
+                              handleFacilitiesInputChange(index, event)
+                            }
+                          />
+                          <Box sx={{ minWidth: 120 }}>
+                            <FormControl fullWidth>
+                              <InputLabel id="demo-simple-select-label">Location</InputLabel>
+                              <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                type="text"
+                                name="location"
+                                value={field.location}
+                                label="Location"
+                                onChange={(event) =>
+                                  handleFacilitiesInputChange(index, event)
+                                }
+                              >
+                                {constants.FACILITY_LOCATIONS.map((loc) => {
+                                  return <MenuItem value={loc}>{loc}</MenuItem>
+                                })}
+                              </Select>
+                            </FormControl>
+                          </Box>
+                          <Box sx={{ minWidth: 120 }}>
+                            <FormControl fullWidth>
+                              <InputLabel id="demo-simple-select-label">Room type</InputLabel>
+                              <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                type="text"
+                                name="roomType"
+                                value={field.roomType}
+                                label="Room type"
+                                onChange={(event) =>
+                                  handleFacilitiesInputChange(index, event)
+                                }
+                              >
+                                {constants.FACILITY_ROOM_TYPES.map((loc) => {
+                                  return <MenuItem value={loc}>{loc}</MenuItem>
+                                })}
+                              </Select>
+                            </FormControl>
+                          </Box>
+                          <TextField
+                            variant="outlined"
+                            margin="normal"
+                            label="Room ID"
+                            type="text"
+                            fullWidth
+                            name="roomId"
+                            value={field.roomId}
                             onChange={(event) =>
                               handleFacilitiesInputChange(index, event)
                             }
