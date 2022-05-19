@@ -16,7 +16,6 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select'
-import { useNavigate } from 'react-router-dom';
 import { constants } from '../../constants';
 import Switch from '@mui/material/Switch';
 
@@ -46,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
 const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
     const { heading, submitButton } = useStyles();
     const [facilityTypes, setFacilityTypes] = useState([]);
-    const navigate = useNavigate();
     const [lat, setLat] = useState(null);
     const [lng, setLng] = useState(null);
     const [maxPersons, setMaxPersons] = useState(null);
@@ -211,7 +209,7 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
                 obj,
             );
             if (res.ok) {
-             navigate('/apartment-list');
+             window.location.href = '/apartment-list';
             }
         } catch (e) {
             console.log(e.message);

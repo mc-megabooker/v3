@@ -10,6 +10,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { Link } from 'react-router-dom';
 
 const ApartmentList: FunctionComponent<any> = (props) => {
   const [apartments, setApartments] = useState([]);
@@ -24,7 +25,7 @@ const ApartmentList: FunctionComponent<any> = (props) => {
     } catch (e) {
         console.log(e.message); 
     }
-};
+  };
 
   useEffect(() => {
     getApartments();
@@ -67,7 +68,7 @@ const ApartmentList: FunctionComponent<any> = (props) => {
           <TableBody>
             {apartments.map(({ data = {} }) => (
               <TableRow key={JSON.parse(data)?.providerApartmentId}>
-                <TableCell align="right">{JSON.parse(data)?.providerApartmentId}</TableCell>
+                <TableCell align="right"><Link to={`apartment-list/${JSON.parse(data)?.providerApartmentId}`}>{JSON.parse(data)?.providerApartmentId}</Link></TableCell>
                 <TableCell align="right">{JSON.parse(data)?.name}</TableCell>
                 <TableCell align="right">{JSON.parse(data)?.sizeInSqm}</TableCell>
                 <TableCell align="right">{JSON.parse(data)?.sizeOfPlot}</TableCell>
