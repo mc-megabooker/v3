@@ -209,7 +209,7 @@ const CreateApartment: FunctionComponent<ICreateApartmentForm> = (props) => {
                 obj,
             );
             if (res.ok) {
-             window.location.href = '/apartment-list';
+             // window.location.href = '/apartment-list';
             }
         } catch (e) {
             console.log(e.message);

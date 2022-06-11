@@ -18,6 +18,11 @@ const CreateApartment: FunctionComponent<any> = (props) => {
                         <Link to="/apartment-list">Apartment list</Link>
                     </Typography>
                 </li>
+                <li>
+                    <Typography variant='button'>
+                        <Link to="/import">Import from XML file</Link>
+                    </Typography>
+                </li>
             </ul>
         </div>
     )

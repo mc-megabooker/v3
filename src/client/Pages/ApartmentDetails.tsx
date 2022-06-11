@@ -15,7 +15,9 @@ const ApartmentDetails: FunctionComponent<any> = (props) => {
           apiRoute.getRoute('getApartment'),
           obj,
       );
-        setApartment(res.record[0].data);
+        setApartment(JSON.parse(res.record[0].data));
+        console.log(JSON.parse(res.record[0].data));
+        
     } catch (e) {
         console.log(e.message); 
     }
@@ -27,84 +29,84 @@ useEffect(() => {
 
   return (
     <div>
-      <h1>{JSON.parse(apartment)?.name}</h1>
+      <h1>{apartment?.name}</h1>
       <h2>Property information</h2>
       <ul style={{ 'listStyleType': 'none' }}>
         <li>
-          Provider Apartment ID: {JSON.parse(apartment)?.providerApartmentId}
+          Provider Apartment ID: {apartment?.providerApartmentId}
         </li>
         <li>
-          Holidu Apartment ID: {JSON.parse(apartment)?.holiduApartmentId}
+          Holidu Apartment ID: {apartment?.holiduApartmentId}
         </li>
         <li>
-          Latitude: {JSON.parse(apartment)?.lat}
+          Latitude: {apartment?.lat}
         </li>
         <li>
-          Longitude: {JSON.parse(apartment)?.lng}
+          Longitude: {apartment?.lng}
         </li>
         <li>
-          Max number of persons: {JSON.parse(apartment)?.maxPersons}
+          Max number of persons: {apartment?.maxPersons}
         </li>
         <li>
-          Active: {new Boolean(JSON.parse(apartment)?.active).toString()}
+          Active: {new Boolean(apartment?.active).toString()}
         </li>
         <li>
-          Apartment type: {JSON.parse(apartment)?.apartmentType}
+          Apartment type: {apartment?.apartmentType}
         </li>
         <li>
-          General minimum price: {JSON.parse(apartment)?.generalMinimumPrice?.amount}
+          General minimum price: {apartment?.generalMinimumPrice?.amount}
         </li>
         <li>
-          Currency: {JSON.parse(apartment)?.generalMinimumPrice?.currency}
+          Currency: {apartment?.generalMinimumPrice?.currency}
         </li>
         <li>
-          Size in SQM: {JSON.parse(apartment)?.sizeInSqm}
+          Size in SQM: {apartment?.sizeInSqm}
         </li>
         <li>
-          Size of Plot: {JSON.parse(apartment)?.sizeOfPlot}
+          Size of Plot: {apartment?.sizeOfPlot}
         </li>
         <li>
-          Storey: {JSON.parse(apartment)?.storey}
+          Storey: {apartment?.storey}
         </li>
         <li>
-          License: {JSON.parse(apartment)?.license}
+          License: {apartment?.license}
         </li>
         <li>
-          Street: {JSON.parse(apartment)?.street}
+          Street: {apartment?.street}
         </li>
         <li>
-          City: {JSON.parse(apartment)?.city}
+          City: {apartment?.city}
         </li>
         <li>
-          Postal code: {JSON.parse(apartment)?.postCode}
+          Postal code: {apartment?.postCode}
         </li>
         <li>
-          Country: {JSON.parse(apartment)?.country}
+          Country: {apartment?.country}
         </li>
         <li>
-          Conatct name: {JSON.parse(apartment)?.contactName}
+          Conatct name: {apartment?.contactName}
         </li>
         <li>
-          Contact phone: {JSON.parse(apartment)?.contactPhone}
+          Contact phone: {apartment?.contactPhone}
         </li>
         <li>
-          Contact email: {JSON.parse(apartment)?.contactEmail}
+          Contact email: {apartment?.contactEmail}
         </li>
         <li>
-          Contact days before arrival: {JSON.parse(apartment)?.contactDaysBeforeArrival}
+          Contact days before arrival: {apartment?.contactDaysBeforeArrival}
         </li>
         <li>
-          Check in from: {JSON.parse(apartment)?.checkInFrom}
+          Check in from: {apartment?.checkInFrom}
         </li>
         <li>
-          Check in to: {JSON.parse(apartment)?.checkInTo}
+          Check in to: {apartment?.checkInTo}
         </li>
         <li>
-          Check out until: {JSON.parse(apartment)?.checkOutUntil}
+          Check out until: {apartment?.checkOutUntil}
         </li>
       </ul>
       <h3>Photos</h3>
-      {JSON.parse(apartment)?.photos?.map((photo) => {
+      {apartment?.photos?.map((photo) => {
           return (
             <p>
               {photo?.url}, POSITION: {photo?.position}, TYPE: {photo?.type}
@@ -112,7 +114,7 @@ useEffect(() => {
           );
         })}
         <h3>Facilities</h3>
-        {JSON.parse(apartment)?.facilities?.map((facility) => {
+        {apartment?.facilities?.map((facility) => {
           return (
             <div>
               <ul style={{ 'listStyleType': 'none' }}>
